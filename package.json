@@ -1,0 +1,22 @@
+{
+  "name": "jan-pro",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type":"module",
+  "scripts": {},
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/node": "^24.9.2"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.56.1",
+    "playwright": "^1.56.1",
+    "typescript": "^5.9.3"
+  },
+  "directories": {
+    "test": "tests"
+  },
+  "description": ""
+}
