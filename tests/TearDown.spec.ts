@@ -36,9 +36,9 @@
      await createBusinessOwnerPage.submit()
     console.log("clicking the created account")
      await dashboardPage.clickcreatedAccountBo(customerData); 
-     console.log('Business Owner created successfully');
+     console.log('Business Owner created successfully');  
 
-     
+
  });
  
    // Step 4: Delete Created Account
