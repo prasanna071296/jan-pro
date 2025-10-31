@@ -3,49 +3,61 @@
  import { DashboardPage } from './pageobject/DashboardPage.js'
  import { CreateBusinessOwnerPage } from './pageobject/CreateBusinessOwnerPage.js'
  import { EditBusinessOwnerAccountPage } from './pageobject/EditBusinessOwnerAccountPage.js';
- import { customerData } from './data/customer.js';
-
- 
+ import { appConfig } from '../config.ts/appConfig.js';
+ import { readExcelData} from '../utils/excelReader.js';
  test.setTimeout(5 * 60 * 1000); // 5 minutes
 
- test('Create and Delete Business Owner', async ({ page,context }) => {
-    // Initialize page objects for this test's page instance
-     const loginPage = new LoginPage(page);
-   const dashboardPage = new DashboardPage(page);
-   const createBusinessOwnerPage = new CreateBusinessOwnerPage(page);
-   const editBusinessOwnerAccountPage = new EditBusinessOwnerAccountPage(page);
-   //generate unique Email
-    const dynamicEmail = `bo_auto_${Date.now()}@mailinator.com`;
-  customerData.emailAddres = dynamicEmail;
+test('Create and Delete Business Owner - Run Excel data sequentially (one after another)', async ({ page }) => {
+ const rows = await readExcelData('Sheet1');
+ for (const [index, testData] of rows.entries()) {
+    
+console.log(`Running test  set #${index + 1} for: ${testData.firstNam} ${testData.lastNam}`); 
 
+//generate unique Email
+     const dynamicEmail = `bo_auto_${Date.now()}_${index}@mailinator.com`;
+      testData.emailAddres = dynamicEmail;
 
-   await test.step('Login as Advisor', async () => {
+ // Initialize page objects for this test
+       const loginPage = new LoginPage(page);
+     const dashboardPage = new DashboardPage(page);
+     const createBusinessOwnerPage = new CreateBusinessOwnerPage(page);
+     const editBusinessOwnerAccountPage = new EditBusinessOwnerAccountPage(page);
 
+ await test.step('Login as Advisor', async () => {
+    // Step 1: Login as Advisor
      await loginPage.navigateToLoginPage();
-     await loginPage.loginFill('prasannajan07+regdev@gmail.com', 'Secret@1234567');
+     await loginPage.loginFill(appConfig.advisor.email, appConfig.advisor.password);
      await loginPage.otpVerification();
-     let expectedURL = '/advisor/dashboard';
-     let currentPage = page.url();
-      await expect(page,`OTP Entered manually and the user successfully landed on the Dashboard page . Expected URL - ${currentPage}`).toHaveURL(expectedURL,{timeout:30000});
- })
 
-   // Step 1: Create Business Owner
+console.log('OTP Entered Manually cnd the user successfully landed on the Dashboard page')
+ 
+  })
+
+// Step 2: Create Business Owner
    await test.step('Advisor Creates a Account for Business Owner', async () => {
+
      await dashboardPage.clickCreateBusinessOwner();
-     await createBusinessOwnerPage.fillBusinessOwnerDetails(customerData);  
+     await createBusinessOwnerPage.fillBusinessOwnerDetails(testData);  
      await createBusinessOwnerPage.submit()
     console.log("clicking the created account")
-     await dashboardPage.clickcreatedAccountBo(customerData); 
+     await dashboardPage.clickcreatedAccountBo(testData); 
      console.log('Business Owner created successfully');  
 
 
  });
  
-   // Step 4: Delete Created Account
+   // Step 3: Delete Created Account
    await test.step('Delete created account', async () => {
+
      await createBusinessOwnerPage.clickCreatedAccountEdit();
      await editBusinessOwnerAccountPage.deleteAccount();
-     console.log('Business Owner deleted successfully');
+    
    });
-});
+   //Step 4: Logout Account
+   await test.step('Advisor Logout',async()=>{
+    await dashboardPage.logoutAd()
 
+  await dashboardPage.clickLogout()
+   })
+  }
+  });
