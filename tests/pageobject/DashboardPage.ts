@@ -4,6 +4,8 @@
      readonly page: Page;
   readonly dashboardUrl: string;
   readonly createBusinessOwnerBtn: Locator;
+  readonly advisorLogout:Locator;
+  readonly logoutButton:Locator;
   readonly createdAccountBo: (email: string) => Locator;
 
     constructor(page:Page) {
@@ -11,14 +13,15 @@
         this.dashboardUrl = '/advisor/dashboard';
       this.createBusinessOwnerBtn = page.locator("//div[text()='Create Business Owner']");
       this.createdAccountBo =(email) => page.locator(`//span[text()='${email}']`)
+      this.advisorLogout=page.locator("//span[text()='Jancy RegAd']")
+      this.logoutButton=page.locator("//button[text()='Log Out']")
     }
 
    async clickCreateBusinessOwner() {
-      // Verify the user is on the dashboard page
      
      //wait for  Create Button Visible
       await this.createBusinessOwnerBtn.waitFor({ state: 'visible', timeout: 60000 });
- //click create button
+ 
       await this.createBusinessOwnerBtn.click();
       console.log('Clicked Create Business Owner button') 
    }
@@ -33,11 +36,17 @@
    }
    
   async clickcreatedAccountBo(data :{ emailAddres: string }){
-  //await this.page.waitForLoadState('networkidle');
+  
    await expect(this.page).toHaveURL(/advisor\/dashboard/);
        await expect(this.page).toHaveURL(/.*\/advisor\/dashboard/, { timeout: 2000 });
      await this.createdAccountBo(data.emailAddres).click()
        console.log('clicked Created Account of BO')
+     }
+     async logoutAd(){
+      await this.advisorLogout.click()
+     }
+     async clickLogout(){
+      await this.logoutButton.click()
      }
     }
 
