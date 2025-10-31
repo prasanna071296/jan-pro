@@ -32,23 +32,3 @@ export class EditBusinessOwnerAccountPage {
     await this.accountDeleted();
   }
 }
-/*/ // tests/PageObject/editBusinessOwnerAccountPage.js
-export class EditBusinessOwnerAccountPage {
-  constructor(page) {
-    this.page = page;
-    this.deleteButton = page.locator('button:has-text("Delete")');
-    this.confirmYes = page.locator('button:has-text("yes")');
-  }
-
-  async deleteAccount() {
-    await this.deleteButton.scrollIntoViewIfNeeded();
-    await this.deleteButton.waitFor({ state: 'visible', timeout: 10000 });
-    await this.deleteButton.click({ force: true });
-    console.log('Clicked Delete button');
-    await this.page.waitForTimeout(4000)
-    await this.confirmYes.waitFor({ state: 'visible', timeout: 10000 });
-    await this.confirmYes.click({ force: true });
-    console.log('Confirmed deletion');
-  }
-}
-*/
