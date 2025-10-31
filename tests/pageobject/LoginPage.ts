@@ -1,10 +1,8 @@
 import { log } from 'console'
 
 import {Page} from '@playwright/test'
-
-
-
- export class LoginPage{
+import { appConfig } from '../../config.ts/appConfig.js';
+export class LoginPage{
   readonly page: Page;
   readonly loginUrl: string;
   readonly emailField;
@@ -13,17 +11,16 @@ import {Page} from '@playwright/test'
 
  constructor(page:Page){
      this.page=page
-     this.loginUrl = '/advisor/login'
+     this.loginUrl = `${appConfig.baseUrl}/advisor/login`;
      this.emailField=page.locator('#email')
      this.passwordField = page.locator('#password')
      this.signInButton = page.locator("//button[@type='submit']")
 
  }
  async navigateToLoginPage(){
-     await this.page.goto(this.loginUrl) 
-        // await expect(this.emailInput).toBeVisible();
-       // await this.page.waitForLoadState('domcontentloaded')
+     await this.page.goto(this.loginUrl)  
     console.log('In Login Page')
+    
  }
  async loginFill(email:string,password: string){
      await this.emailField.fill(email)
